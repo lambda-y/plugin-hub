@@ -16,4 +16,26 @@ public interface RenameIngameItemConfig extends Config
 	{
 		return "Hello";
 	}
+
+	@ConfigItem(
+		keyName = "enable",
+		name = "enable Name swaps",
+		description = "When looking at a item, it is referred to a different name",
+		position = 4
+	)
+	default boolean preferSoonest()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 7,
+		keyName = "namesToChange",
+		name = "Change name of items",
+		description = "List of the RuneScape item name to the preferred name '(RS_name1, Preferred_name1), (RS_name2, Preferred_name2) '"
+	)
+	default String getItemNamesToReplace()
+	{
+		return "";
+	}
 }

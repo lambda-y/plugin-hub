@@ -1,6 +1,12 @@
 package com.example.renameitem;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Provides;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -11,6 +17,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.util.Text;
 
 @Slf4j
 @PluginDescriptor(
@@ -23,6 +30,8 @@ public class RenameIngameItemPlugin extends Plugin
 
 	@Inject
 	private RenameIngameItemConfig config;
+
+	private List<String> itemNames = new ArrayList<>();
 
 	@Override
 	protected void startUp() throws Exception
@@ -49,5 +58,25 @@ public class RenameIngameItemPlugin extends Plugin
 	RenameIngameItemConfig provideConfig(ConfigManager configManager)
 	{
 		return configManager.getConfig(RenameIngameItemConfig.class);
+	}
+
+	@VisibleForTesting
+	List<String> getNamesList()
+	{
+		final String configItems = config.getItemNamesToReplace();
+
+		if (configItems.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+
+		return Text.fromCSV(configItems);
+	}
+
+	void rebuild()
+	{
+		itemNames = getNamesList();
+
+		client.getItemContainers();
 	}
 }
